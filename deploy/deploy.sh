@@ -38,7 +38,7 @@ docker compose up -d
 # Health check
 echo "Waiting for API health..."
 for i in $(seq 1 30); do
-    if curl -sf http://localhost:8000/api/v1/health > /dev/null 2>&1; then
+    if curl -sf http://localhost:8001/api/v1/health > /dev/null 2>&1; then
         echo "API is healthy!"
         break
     fi
@@ -58,6 +58,6 @@ echo ""
 echo "=== Deploy complete ==="
 docker compose ps
 echo ""
-echo "Frontend: http://10.0.0.5:3000"
-echo "API:      http://10.0.0.5:8000"
-echo "API Docs: http://10.0.0.5:8000/docs"
+echo "Frontend: http://10.0.0.5:3001"
+echo "API:      http://10.0.0.5:8001"
+echo "API Docs: http://10.0.0.5:8001/docs"
