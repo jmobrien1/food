@@ -1,0 +1,511 @@
+ **Phase 1: Core Logic MVP** 
+
+### **Project Structure**
+
+```text
+jmobrien1/food/
+├── backend/
+│   ├── app/
+│   │   ├── agents/
+│   │   │   ├── __init__.py
+│   │   │   ├── auditor.py         # The Auditor Agent (Constraint Mapping)
+│   │   │   ├── translator.py      # Translation Engine (Flavor Affinity & Logic)
+│   │   │   ├── scheduler.py       # Mise en Place Timeline Generator
+│   │   │   └── chef_secrets.py    # Executive Chef Agent (Mastery Layer)
+│   │   ├── core/
+│   │   │   ├── __init__.py
+│   │   │   ├── config.py
+│   │   │   └── math_utils.py      # Jaccard Similarity & RCF Logic
+│   │   ├── models/
+│   │   │   └── schemas.py         # Pydantic Models (Audit, Plan, Timeline)
+│   │   ├── services/
+│   │   │   ├── graph_service.py   # Neo4j Knowledge Graph Handler
+│   │   │   └── vector_service.py  # Pinecone Vector Search Handler
+│   │   └── main.py                # FastAPI Entry Point
+│   └── requirements.txt
+├── frontend/
+│   ├── lib/
+│   │   ├── main.dart
+│   │   ├── models/
+│   │   │   └── culinary_models.dart
+│   │   ├── screens/
+│   │   │   ├── audit_screen.dart  # "The Audit" Interface
+│   │   │   └── timeline_screen.dart # "Master Timeline" UI
+│   └── pubspec.yaml
+└── README.md
+
+```
+
+---
+
+### **1. Backend Implementation (Python/FastAPI)**
+
+**File:** `backend/requirements.txt`
+
+```text
+fastapi>=0.109.0
+uvicorn>=0.27.0
+pydantic>=2.6.0
+langchain>=0.1.0
+neo4j>=5.16.0
+pinecone-client>=3.0.0
+openai>=1.10.0
+numpy
+
+```
+
+**File:** `backend/app/core/math_utils.py`
+
+
+Implements the Jaccard Similarity logic for substitutions and RCF for scaling.
+
+```python
+from typing import Set, List
+
+def calculate_jaccard_similarity(set_a: Set[str], set_b: Set[str]) -> float:
+    """
+    Calculates Jaccard Similarity for flavor affinity logic.
+    J(A,B) = |A ∩ B| / |A ∪ B|
+    """
+    intersection = len(set_a.intersection(set_b))
+    union = len(set_a.union(set_b))
+    return intersection / union if union > 0 else 0.0
+
+def calculate_rcf(desired_yield: float, original_yield: float) -> float:
+    """
+    Calculates Recipe Conversion Factor (RCF).
+    """
+    if original_yield == 0:
+        return 0.0
+    return desired_yield / original_yield
+
+def adjust_nonlinear_ingredients(ingredient_name: str, quantity: float, rcf: float) -> float:
+    """
+    Applies 'safety ceilings' for potent ingredients like spices or leavening agents.
+    [cite_start]PRD Source: [cite: 33]
+    """
+    potent_ingredients = ["cayenne", "saffron", "baking powder", "clove"]
+    
+    if any(p in ingredient_name.lower() for p in potent_ingredients):
+        # Non-linear scaling logic: Scale by square root of RCF for safety if RCF > 2
+        if rcf > 2:
+            return quantity * (rcf ** 0.5)
+    
+    return quantity * rcf
+
+```
+
+**File:** `backend/app/models/schemas.py`
+
+```python
+from pydantic import BaseModel, Field
+from typing import List, Optional, Dict
+
+class AuditRequest(BaseModel):
+    [cite_start]"""The Audit: Diagnostic entry point [cite: 25]"""
+    ingredients: List[str]
+    equipment: List[str] # e.g., "cast iron skillet", "sous-vide"
+    time_limit_minutes: int
+    user_skill: str = Field(default="Ambitious Amateur", pattern="^(Ambitious Amateur|Dinner Party Host)$")
+    guest_count: int
+
+class TimelineTask(BaseModel):
+    [cite_start]phase: str # "Day Before", "Hour Before", "Active Cooking" [cite: 45]
+    time_offset: int # Minutes from start
+    instruction: str
+    is_active: bool # True for chopping, False for resting/marinating
+
+class ExecutionPlan(BaseModel):
+    dish_name: str
+    description: str
+    substitution_notes: List[str]
+    [cite_start]ingredients_list: Dict[str, str] # Gram-based precision [cite: 30]
+    timeline: List[TimelineTask]
+    chefs_secrets: List[str]
+
+```
+
+**File:** `backend/app/agents/auditor.py`
+
+
+The Auditor Agent moves beyond simple lists to map the culinary environment.
+
+```python
+from app.models.schemas import AuditRequest
+
+class AuditorAgent:
+    def analyze_constraints(self, audit: AuditRequest):
+        """
+        Filters professional techniques based on hardware and time.
+        [cite_start]Example: Checks for Pacojet, substitutes if missing[cite: 29].
+        """
+        constraints = {
+            "can_sous_vide": "immersion circulator" in audit.equipment,
+            "can_sear_high_heat": "cast iron skillet" in audit.equipment or "carbon steel" in audit.equipment,
+            "can_blend_hot": "vitamix" in audit.equipment or "high-speed blender" in audit.equipment,
+            "time_pressure": audit.time_limit_minutes < 60
+        }
+        
+        # [cite_start]Identify "technically impossible" scenarios [cite: 78]
+        flags = []
+        if not constraints["can_sear_high_heat"]:
+            flags.append("NO_SEAR_CAPABILITY: Maillard reaction limited. Suggesting oven-roast.")
+            
+        return constraints, flags
+
+```
+
+**File:** `backend/app/agents/translator.py`
+
+
+The Translation Engine: Core intelligence layer converting intent to execution.
+
+```python
+from app.core.math_utils import calculate_jaccard_similarity
+from typing import List, Set
+
+class TranslationEngine:
+    def __init__(self, graph_service, vector_service):
+        self.graph = graph_service
+        self.vector = vector_service
+
+    def get_flavor_substitute(self, missing_ingredient: str, current_pantry: List[str]) -> str:
+        """
+        Dynamic Substitution using Flavor Affinity Logic.
+        Uses Jaccard similarity to find substitutes that maintain the 'soul' of the dish.
+        [cite_start]PRD Source: [cite: 38, 39, 40]
+        """
+        # Mocking the flavor profiles that would come from Neo4j/Flavor Bible
+        # [cite_start]In production, this queries the Knowledge Graph [cite: 68]
+        flavor_profiles = {
+            "tarragon": {"anise", "herbal", "slightly bitter"},
+            "chervil": {"anise", "parsley-like", "delicate"},
+            "basil": {"sweet", "peppery", "clove"},
+            "anise seed": {"anise", "licorice", "spicy"}
+        }
+
+        if missing_ingredient not in flavor_profiles:
+            return "generic_green_herb"
+
+        target_profile = flavor_profiles[missing_ingredient]
+        best_match = None
+        highest_score = 0.0
+
+        # Compare against known ingredients (simplified list for MVP)
+        candidates = ["chervil", "basil", "anise seed"]
+        
+        for candidate in candidates:
+            candidate_profile = flavor_profiles.get(candidate, set())
+            score = calculate_jaccard_similarity(target_profile, candidate_profile)
+            if score > highest_score:
+                highest_score = score
+                best_match = candidate
+                
+        return best_match
+
+    def generate_dish_concept(self, audit_data, constraints):
+        # [cite_start]Logic to switch execution path [cite: 35, 36]
+        if constraints["can_sous_vide"]:
+            return "Sous-vide Chicken Roulade"
+        elif constraints["can_sear_high_heat"]:
+            return "Butter-Basted Pan-Roasted Airline Breast"
+        else:
+            return "Slow-Roasted Herb Chicken"
+
+```
+
+**File:** `backend/app/agents/scheduler.py`
+
+
+Algorithmic Temporal Planning: "Mise en Temps".
+
+```python
+from app.models.schemas import TimelineTask
+
+class SchedulerAgent:
+    def create_timeline(self, recipe_steps) -> List[TimelineTask]:
+        """
+        Divides timeline into: Day Before, Hour Before, Active Cooking.
+        Identifies 'passive time' to interleave tasks.
+        [cite_start]PRD Source: [cite: 45, 46, 47, 48]
+        """
+        timeline = []
+        
+        # Example hardcoded logic for MVP demonstration
+        # [cite_start]Phase: The Hour Before [cite: 47]
+        timeline.append(TimelineTask(
+            phase="Hour Before",
+            time_offset=-60,
+            instruction="Mise en Place: Weigh all ingredients to the gram.",
+            is_active=True
+        ))
+        
+        timeline.append(TimelineTask(
+            phase="Hour Before",
+            time_offset=-45,
+            instruction="Tempering: Remove protein from fridge to reach room temp.",
+            is_active=False # Passive time
+        ))
+
+        # [cite_start]Phase: Active Cooking [cite: 48]
+        timeline.append(TimelineTask(
+            phase="Active Cooking",
+            time_offset=0,
+            instruction="Sear protein skin-side down.",
+            is_active=True
+        ))
+        
+        return timeline
+
+```
+
+**File:** `backend/app/main.py`
+
+```python
+from fastapi import FastAPI
+from app.models.schemas import AuditRequest, ExecutionPlan
+from app.agents.auditor import AuditorAgent
+from app.agents.translator import TranslationEngine
+from app.agents.scheduler import SchedulerAgent
+from app.agents.chef_secrets import ChefSecretsAgent
+
+app = FastAPI(title="Chef de Cuisine API", version="0.1.0")
+
+# Initialize Agents
+auditor = AuditorAgent()
+# Mock services for MVP
+translator = TranslationEngine(graph_service=None, vector_service=None)
+scheduler = SchedulerAgent()
+chef = ChefSecretsAgent()
+
+@app.post("/generate-plan", response_model=ExecutionPlan)
+async def generate_plan(audit: AuditRequest):
+    """
+    Orchestrates the 'Chef Logic' Chain-of-Thought.
+    [cite_start]PRD Source: [cite: 75, 76]
+    """
+    # 1. Auditor Agent: Check constraints
+    constraints, flags = auditor.analyze_constraints(audit)
+    
+    # 2. Translation Engine: Select dish and substitutes
+    dish_concept = translator.generate_dish_concept(audit, constraints)
+    
+    # Example Substitution Logic Check
+    sub_notes = []
+    if "tarragon" not in audit.ingredients:
+        sub = translator.get_flavor_substitute("tarragon", audit.ingredients)
+        sub_notes.append(f"Substituted tarragon with {sub} based on anise-affinity.")
+
+    # 3. Scheduler Agent: Create Mise en Temps
+    timeline = scheduler.create_timeline([])
+    
+    # [cite_start]4. Executive Chef Agent: Inject Secrets [cite: 83]
+    secrets = chef.inject_secrets(dish_concept)
+
+    return ExecutionPlan(
+        dish_name=dish_concept,
+        description=f"A Michelin-adapted execution for {audit.user_skill} level.",
+        substitution_notes=sub_notes,
+        ingredients_list={"Chicken": "400g", "Butter": "50g", "Thyme": "5g"},
+        timeline=timeline,
+        chefs_secrets=secrets
+    )
+
+```
+
+---
+
+### **2. Frontend Implementation (Flutter)**
+
+**File:** `frontend/lib/main.dart`
+
+
+Flutter is recommended for its superior performance in rendering complex UIs like the "Master Timeline".
+
+```dart
+import 'package:flutter/material.dart';
+import 'screens/audit_screen.dart';
+
+void main() {
+  runApp(const ChefDeCuisineApp());
+}
+
+class ChefDeCuisineApp extends StatelessWidget {
+  const ChefDeCuisineApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Chef de Cuisine',
+      theme: ThemeData(
+        brightness: Brightness.dark, // Michelin aesthetic
+        primaryColor: Colors.deepOrange, // "Heat" accent
+        useMaterial3: true,
+        fontFamily: 'Serif', // Evoking menu typography
+      ),
+      home: const AuditScreen(),
+    );
+  }
+}
+
+```
+
+**File:** `frontend/lib/screens/audit_screen.dart`
+
+
+The User Interface for the "Audit" phase.
+
+```dart
+import 'package:flutter/material.dart';
+import 'timeline_screen.dart';
+
+class AuditScreen extends StatefulWidget {
+  const AuditScreen({super.key});
+
+  @override
+  State<AuditScreen> createState() => _AuditScreenState();
+}
+
+class _AuditScreenState extends State<AuditScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final List<String> _selectedEquipment = [];
+  
+  // Hardcoded for MVP UI
+  final List<String> _equipmentOptions = [
+    "Cast Iron Skillet", 
+    "Immersion Circulator", 
+    "Blender", 
+    "Microplane"
+  ];
+
+  void _submitAudit() {
+    // In production, this calls the FastAPI /generate-plan endpoint
+    // Navigate to Timeline
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const TimelineScreen()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("The Audit")),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Map Your Environment",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              const Text("Select Available Hardware:"),
+              ..._equipmentOptions.map((eq) => CheckboxListTile(
+                title: Text(eq),
+                value: _selectedEquipment.contains(eq),
+                onChanged: (bool? value) {
+                  setState(() {
+                    if (value == true) {
+                      _selectedEquipment.add(eq);
+                    } else {
+                      _selectedEquipment.remove(eq);
+                    }
+                  });
+                },
+              )),
+              const Spacer(),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: _submitAudit,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                  ),
+                  child: const Text("INITIALIZE TRANSLATION PROTOCOL"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+```
+
+**File:** `frontend/lib/screens/timeline_screen.dart`
+
+
+The interactive, scrollable "Master Timeline".
+
+```dart
+import 'package:flutter/material.dart';
+
+class TimelineScreen extends StatelessWidget {
+  const TimelineScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Mise en Temps")),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          _buildSectionHeader("The Hour Before"),
+          _buildTaskCard("-60 min", "Mise en Place", "Weigh all ingredients. Accuracy is critical."),
+          _buildTaskCard("-45 min", "Tempering", "Passive: Let protein rest at room temp.", isActive: false),
+          const Divider(height: 40, color: Colors.grey),
+          
+          _buildSectionHeader("Service"),
+          _buildTaskCard("Now", "The Sear", "High heat. Listen for aggressive sizzle.", isActive: true),
+          _buildTaskCard("+5 min", "Butter Baste", "Add thyme and garlic. Tilt pan.", isActive: true),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Text(
+        title.toUpperCase(),
+        style: const TextStyle(
+          color: Colors.deepOrange, 
+          letterSpacing: 1.5, 
+          fontWeight: FontWeight.bold
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTaskCard(String time, String title, String desc, {bool isActive = true}) {
+    return Card(
+      color: isActive ? Colors.grey[900] : Colors.grey[850],
+      margin: const EdgeInsets.only(bottom: 12),
+      child: ListTile(
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            border: Border.all(color: isActive ? Colors.white : Colors.grey),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(time, style: const TextStyle(fontWeight: FontWeight.bold)),
+        ),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text(desc),
+        trailing: isActive 
+          ? const Icon(Icons.timer, color: Colors.deepOrange) 
+          : const Icon(Icons.hourglass_empty, color: Colors.grey),
+      ),
+    );
+  }
+}
+
+```

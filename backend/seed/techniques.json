@@ -1,0 +1,502 @@
+[
+  {
+    "name": "Sous Vide",
+    "category": "Heat Application",
+    "min_skill_level": "Ambitious Amateur",
+    "required_equipment": ["Immersion Circulator (Sous Vide)"],
+    "time_minutes": {"min": 60, "max": 4320},
+    "description": "Vacuum-sealed food cooked in a precisely controlled water bath at a consistent low temperature. Produces exceptionally even doneness and retains moisture.",
+    "pro_tip": "Pre-sear proteins before bagging to develop Maillard flavor compounds that infuse during the long cook. Finish with a hard sear in a ripping hot cast iron for 45-60 seconds per side.",
+    "fallback_technique_name": "Oven Poaching"
+  },
+  {
+    "name": "Oven Poaching",
+    "category": "Heat Application",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Conventional Oven", "Roasting Pan"],
+    "time_minutes": {"min": 20, "max": 60},
+    "description": "Gently cooking protein submerged or partially submerged in liquid in a low-temperature oven (250-325F). Produces moist, tender results.",
+    "pro_tip": "Use a flavorful poaching liquid with aromatics -- it becomes a ready-made sauce base. Cover tightly with foil to retain steam.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Pan Searing",
+    "category": "Heat Application",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Cast Iron Skillet"],
+    "time_minutes": {"min": 5, "max": 15},
+    "description": "Cooking food in a very hot pan with a small amount of fat to develop a deeply browned, caramelized crust via the Maillard reaction.",
+    "pro_tip": "Pat protein completely dry with paper towels and season generously before searing. Do not move the protein for at least 2-3 minutes -- let the crust develop before flipping.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Reverse Sear",
+    "category": "Heat Application",
+    "min_skill_level": "Ambitious Amateur",
+    "required_equipment": ["Conventional Oven", "Cast Iron Skillet", "Digital Instant-Read Thermometer"],
+    "time_minutes": {"min": 45, "max": 90},
+    "description": "Slowly bringing a thick-cut protein to target internal temperature in a low oven (200-275F), then finishing with a high-heat sear for crust development.",
+    "pro_tip": "Pull the protein from the oven 10-15F below your target temp. Rest uncovered for 10 minutes before searing -- this dries the surface for a better crust.",
+    "fallback_technique_name": "Pan Searing"
+  },
+  {
+    "name": "Braising",
+    "category": "Heat Application",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Dutch Oven", "Conventional Oven"],
+    "time_minutes": {"min": 120, "max": 480},
+    "description": "Browning protein, then slow-cooking partially submerged in liquid at low heat. Breaks down collagen in tough cuts into gelatin, yielding fork-tender results.",
+    "pro_tip": "Brown the meat in batches to avoid crowding and steaming. Deglaze the fond thoroughly -- those caramelized bits are concentrated flavor. The braise is always better the next day after the flavors meld.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Roasting",
+    "category": "Heat Application",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Conventional Oven", "Roasting Pan"],
+    "time_minutes": {"min": 20, "max": 240},
+    "description": "Cooking food uncovered in an oven using dry, radiant heat. Suitable for whole proteins, root vegetables, and large cuts.",
+    "pro_tip": "Start at high heat (450F) for the first 15-20 minutes to develop a crust, then reduce to 325F to cook through evenly. Rest the protein for half its cooking time before carving.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Grilling (Direct Heat)",
+    "category": "Heat Application",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Grill (Charcoal/Gas)"],
+    "time_minutes": {"min": 5, "max": 30},
+    "description": "Cooking food directly over a high-heat flame source. Creates char marks, smoky flavor, and rapid Maillard browning.",
+    "pro_tip": "Create two heat zones on your grill -- hot for searing and cooler for finishing. Oil the grates, not the food, to prevent sticking. Let the grill marks set before turning.",
+    "fallback_technique_name": "Pan Searing"
+  },
+  {
+    "name": "Grilling (Indirect Heat)",
+    "category": "Heat Application",
+    "min_skill_level": "Ambitious Amateur",
+    "required_equipment": ["Grill (Charcoal/Gas)"],
+    "time_minutes": {"min": 30, "max": 360},
+    "description": "Cooking food adjacent to, rather than directly over, the heat source with the lid closed. Turns the grill into a convection oven with smoke flavor.",
+    "pro_tip": "Keep a water pan near the heat source to maintain humidity and stabilize temperature. Add wood chunks (not chips) for sustained smoke production.",
+    "fallback_technique_name": "Roasting"
+  },
+  {
+    "name": "Smoking (Hot)",
+    "category": "Heat Application",
+    "min_skill_level": "Ambitious Amateur",
+    "required_equipment": ["Grill (Charcoal/Gas)"],
+    "time_minutes": {"min": 120, "max": 960},
+    "description": "Cooking food low and slow (225-275F) in a closed environment with hardwood smoke. Develops a bark on the exterior and a smoke ring beneath the surface.",
+    "pro_tip": "Maintain thin blue smoke, not thick white billowing smoke which causes bitterness. Spritz with apple cider vinegar every 45 minutes after the first 2 hours for bark development.",
+    "fallback_technique_name": "Braising"
+  },
+  {
+    "name": "Deep Frying",
+    "category": "Heat Application",
+    "min_skill_level": "Ambitious Amateur",
+    "required_equipment": ["Deep Fryer"],
+    "time_minutes": {"min": 3, "max": 15},
+    "description": "Submerging food completely in hot oil (325-375F). Creates a crispy exterior while cooking the interior rapidly through conductive heat transfer.",
+    "pro_tip": "Fry in small batches to maintain oil temperature -- overcrowding drops the temp and causes greasy food. Double-fry for extra crispness: first at 325F, rest 10 minutes, then at 375F.",
+    "fallback_technique_name": "Shallow Frying"
+  },
+  {
+    "name": "Shallow Frying",
+    "category": "Heat Application",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Cast Iron Skillet"],
+    "time_minutes": {"min": 5, "max": 20},
+    "description": "Cooking food in oil that comes halfway up the side of the item. A more approachable alternative to deep frying that still produces a crispy exterior.",
+    "pro_tip": "Use a clip-on thermometer to monitor oil temperature. Add food away from you to prevent splashing. Drain on a wire rack, not paper towels, for maximum crispness.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Stir-Frying",
+    "category": "Heat Application",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Wok"],
+    "time_minutes": {"min": 3, "max": 10},
+    "description": "Rapid cooking over extremely high heat with constant motion. Achieves wok hei (breath of the wok) -- the characteristic smoky sear of Chinese cooking.",
+    "pro_tip": "Have every ingredient prepped and within arm's reach before heating the wok. Cook proteins and vegetables separately, then combine. The wok should be smoking hot before adding oil.",
+    "fallback_technique_name": "Pan Searing"
+  },
+  {
+    "name": "Steaming",
+    "category": "Heat Application",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Bamboo Steamer"],
+    "time_minutes": {"min": 5, "max": 30},
+    "description": "Cooking food suspended above boiling water using trapped steam. Preserves nutrients, color, and texture without added fat.",
+    "pro_tip": "Line the steamer with parchment paper or cabbage leaves to prevent sticking. Do not lift the lid during cooking -- you lose significant heat and steam each time.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Poaching",
+    "category": "Heat Application",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Saucepan"],
+    "time_minutes": {"min": 10, "max": 40},
+    "description": "Gently cooking food in liquid held at 160-180F -- below a simmer. The liquid should show small bubbles but no active movement. Ideal for delicate proteins like fish and eggs.",
+    "pro_tip": "Add a splash of vinegar to poaching water for eggs -- it helps the whites set quickly. For fish, use a court-bouillon with wine, herbs, and aromatics.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Confit",
+    "category": "Heat Application",
+    "min_skill_level": "Ambitious Amateur",
+    "required_equipment": ["Dutch Oven", "Conventional Oven"],
+    "time_minutes": {"min": 120, "max": 480},
+    "description": "Slowly cooking food fully submerged in fat at a low temperature (200-250F). A traditional preservation technique that produces silky, meltingly tender results.",
+    "pro_tip": "Cure the protein with salt and aromatics for 24 hours before cooking for deeper seasoning. The confit fat can be reused multiple times -- it gains flavor with each use.",
+    "fallback_technique_name": "Braising"
+  },
+  {
+    "name": "Blanching and Shocking",
+    "category": "Preparation",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Stock Pot"],
+    "time_minutes": {"min": 2, "max": 5},
+    "description": "Briefly boiling vegetables then immediately plunging into ice water. Sets vibrant color, partially cooks, and halts the cooking process precisely.",
+    "pro_tip": "Use heavily salted water (it should taste like the sea) for blanching -- this is your only chance to season the vegetable from within. Dry thoroughly after shocking.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Deglazing",
+    "category": "Sauce Making",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Stainless Steel Saute Pan"],
+    "time_minutes": {"min": 2, "max": 5},
+    "description": "Adding liquid (wine, stock, vinegar) to a hot pan after searing to dissolve the browned fond (caramelized drippings). The foundation of most pan sauces.",
+    "pro_tip": "Remove the pan from heat for 10 seconds before adding alcohol to prevent flare-ups. Scrape every bit of fond -- that is where the depth of flavor lives.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Pan Sauce (Classical)",
+    "category": "Sauce Making",
+    "min_skill_level": "Ambitious Amateur",
+    "required_equipment": ["Stainless Steel Saute Pan"],
+    "time_minutes": {"min": 8, "max": 15},
+    "description": "Building a sauce in the same pan used to sear the protein: sweat shallots, deglaze with wine, reduce, add stock, reduce again, and finish by mounting with cold butter.",
+    "pro_tip": "Reduce the wine until nearly dry (au sec) before adding stock -- this concentrates flavor and cooks off harsh alcohol notes. Swirl in cold butter off heat to create a glossy emulsion.",
+    "fallback_technique_name": "Deglazing"
+  },
+  {
+    "name": "Bechamel (White Sauce)",
+    "category": "Sauce Making",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Saucepan"],
+    "time_minutes": {"min": 15, "max": 25},
+    "description": "A mother sauce made from a butter-flour roux with milk whisked in gradually. The base for mornay, soubise, and many gratins.",
+    "pro_tip": "Cook the roux for 2-3 minutes to eliminate raw flour taste. Add warm milk to warm roux and whisk constantly -- this prevents lumps. Season with nutmeg, white pepper, and bay leaf.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Hollandaise",
+    "category": "Sauce Making",
+    "min_skill_level": "Serious Enthusiast",
+    "required_equipment": ["Saucepan"],
+    "time_minutes": {"min": 15, "max": 25},
+    "description": "A warm emulsion sauce of egg yolks, clarified butter, and lemon juice whisked over gentle heat. One of the five French mother sauces.",
+    "pro_tip": "Keep a small bowl of ice water nearby -- if the sauce starts to break, whisk in a teaspoon of cold water immediately. The water bath should never exceed 150F or the yolks will scramble.",
+    "fallback_technique_name": "Blender Hollandaise"
+  },
+  {
+    "name": "Blender Hollandaise",
+    "category": "Sauce Making",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["High-Speed Blender"],
+    "time_minutes": {"min": 5, "max": 10},
+    "description": "A simplified hollandaise made by streaming hot clarified butter into egg yolks spinning in a blender. More foolproof than the classical method.",
+    "pro_tip": "The butter must be hot enough (about 180F) to gently cook the yolks as it emulsifies. Start with a very slow drizzle until the emulsion catches, then increase the stream.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Vinaigrette Emulsion",
+    "category": "Emulsification",
+    "min_skill_level": "Home Cook",
+    "required_equipment": [],
+    "time_minutes": {"min": 3, "max": 5},
+    "description": "A temporary emulsion of oil and acid (typically 3:1 ratio) stabilized by vigorous whisking. Can be stabilized with mustard, honey, or egg yolk.",
+    "pro_tip": "Add a teaspoon of Dijon mustard as an emulsifier -- the lecithin in mustard keeps the vinaigrette together much longer. Whisk the acid and mustard first, then stream in the oil.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Aioli (Traditional)",
+    "category": "Emulsification",
+    "min_skill_level": "Serious Enthusiast",
+    "required_equipment": ["Mortar and Pestle"],
+    "time_minutes": {"min": 15, "max": 25},
+    "description": "A garlic and olive oil emulsion made by pounding garlic with salt in a mortar, then slowly incorporating oil drop by drop until thick and glossy.",
+    "pro_tip": "The garlic must be pounded to a completely smooth paste with coarse salt before adding any oil. If it breaks, start fresh with a new yolk in a clean bowl and slowly whisk in the broken mixture.",
+    "fallback_technique_name": "Aioli (Blender)"
+  },
+  {
+    "name": "Aioli (Blender)",
+    "category": "Emulsification",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Immersion Blender"],
+    "time_minutes": {"min": 3, "max": 5},
+    "description": "A simplified aioli made with an immersion blender: egg, garlic, lemon juice, and oil in a tall container, blending from the bottom up to create a near-instant emulsion.",
+    "pro_tip": "Place the immersion blender flat on the bottom of the container and do not lift it for the first 10 seconds. The emulsion will build from the bottom up like magic.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Beurre Blanc",
+    "category": "Sauce Making",
+    "min_skill_level": "Serious Enthusiast",
+    "required_equipment": ["Saucepan"],
+    "time_minutes": {"min": 15, "max": 25},
+    "description": "A classic French butter sauce made by reducing white wine and shallots, then whisking in cold butter piece by piece to create a creamy, emulsified sauce.",
+    "pro_tip": "Never let the sauce boil once you start adding butter -- it will break. Keep the heat extremely low and whisk constantly. A tablespoon of heavy cream added before the butter helps stabilize the emulsion.",
+    "fallback_technique_name": "Pan Sauce (Classical)"
+  },
+  {
+    "name": "Reduction",
+    "category": "Sauce Making",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Saucepan"],
+    "time_minutes": {"min": 10, "max": 60},
+    "description": "Simmering a liquid (stock, wine, juice) uncovered to evaporate water and concentrate flavors, body, and viscosity. The foundation of sauce making.",
+    "pro_tip": "Use a wider pan for faster reduction. Taste frequently as flavors concentrate -- salt intensifies with reduction, so season at the end. A proper nape consistency should coat the back of a spoon.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Caramelization",
+    "category": "Heat Application",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Saucepan"],
+    "time_minutes": {"min": 10, "max": 30},
+    "description": "Heating sugar (dry or wet method) until it breaks down and transforms into complex, bittersweet, amber-colored compounds. Temperature control is critical.",
+    "pro_tip": "For wet caramel, add a squeeze of lemon juice to the sugar water to prevent crystallization. Do not stir once it starts coloring -- just swirl the pan gently. Have your next ingredient ready because caramel goes from perfect to burnt in seconds.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Tempering Chocolate",
+    "category": "Preparation",
+    "min_skill_level": "Serious Enthusiast",
+    "required_equipment": ["Saucepan", "Digital Instant-Read Thermometer"],
+    "time_minutes": {"min": 20, "max": 40},
+    "description": "Precisely melting and cooling chocolate through specific temperature ranges to create stable cocoa butter crystals. Produces a glossy finish and clean snap.",
+    "pro_tip": "Use the seeding method: melt two-thirds of your chocolate to 115F (dark), then stir in the remaining third finely chopped to bring it down to 82F, then warm gently to 88-90F working temperature.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Brunoise",
+    "category": "Preparation",
+    "min_skill_level": "Ambitious Amateur",
+    "required_equipment": [],
+    "time_minutes": {"min": 10, "max": 20},
+    "description": "A precision knife cut producing 1/8-inch (3mm) uniform cubes. Used as a garnish or aromatic base. Requires first cutting a fine julienne, then cross-cutting into cubes.",
+    "pro_tip": "Use a razor-sharp knife and stabilize the vegetable with a flat cut on one side. Consistent julienne strips are the key -- if those are even, the brunoise will follow naturally.",
+    "fallback_technique_name": "Small Dice"
+  },
+  {
+    "name": "Small Dice",
+    "category": "Preparation",
+    "min_skill_level": "Home Cook",
+    "required_equipment": [],
+    "time_minutes": {"min": 5, "max": 15},
+    "description": "A standard knife cut producing 1/4-inch (6mm) uniform cubes. A workhorse cut for mirepoix, salsas, and any dish requiring even cooking of aromatics.",
+    "pro_tip": "Use the claw grip to protect your fingertips and let the knife do the work. Consistency matters more than speed -- even-sized pieces cook at the same rate.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Chiffonade",
+    "category": "Preparation",
+    "min_skill_level": "Home Cook",
+    "required_equipment": [],
+    "time_minutes": {"min": 2, "max": 5},
+    "description": "Stacking herb or leafy green leaves, rolling them tightly into a cigar shape, then slicing crosswise into thin ribbons. A classic finishing technique for basil, mint, and sorrel.",
+    "pro_tip": "Use a very sharp knife and a single clean cut for each slice -- sawing bruises delicate herbs and causes oxidation and blackening, especially with basil.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Dry Brining",
+    "category": "Preparation",
+    "min_skill_level": "Home Cook",
+    "required_equipment": [],
+    "time_minutes": {"min": 60, "max": 2880},
+    "description": "Salting protein and resting it uncovered in the refrigerator. The salt draws out moisture, dissolves in it, then is reabsorbed, seasoning the meat deeply and improving texture.",
+    "pro_tip": "Use 1/2 teaspoon of kosher salt per pound of meat. For poultry, 24-48 hours uncovered in the fridge produces the crispiest skin. Pat dry before cooking.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Wet Brining",
+    "category": "Preparation",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Stock Pot"],
+    "time_minutes": {"min": 120, "max": 1440},
+    "description": "Submerging protein in a salt-water solution (typically 5-8% salt by weight) with aromatics. Adds moisture and season throughout the protein via osmosis and diffusion.",
+    "pro_tip": "Dissolve the salt completely in warm water, then chill the brine thoroughly before adding the protein. Add sugar to balance the salt and promote browning.",
+    "fallback_technique_name": "Dry Brining"
+  },
+  {
+    "name": "Marinating",
+    "category": "Preparation",
+    "min_skill_level": "Home Cook",
+    "required_equipment": [],
+    "time_minutes": {"min": 30, "max": 1440},
+    "description": "Soaking food in a seasoned liquid containing acid, oil, and aromatics. Acid tenderizes the surface and flavors penetrate a few millimeters into the protein.",
+    "pro_tip": "Marinades do not penetrate deeply -- they are primarily a surface treatment. For thicker cuts, score the surface or use a jaccard tenderizer. Never marinate fish in acid for more than 30 minutes or it will become mushy.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Curing",
+    "category": "Preservation",
+    "min_skill_level": "Serious Enthusiast",
+    "required_equipment": [],
+    "time_minutes": {"min": 1440, "max": 43200},
+    "description": "Preserving protein with salt (and sometimes sugar, nitrates, and spices) over extended periods. Transforms texture, concentrates flavor, and inhibits bacterial growth.",
+    "pro_tip": "Use precise measurements by weight, not volume -- curing is a science. Pink curing salt (Prague Powder #1) at 1 teaspoon per 5 pounds is standard for short cures. Keep meticulous records of ratios.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Pickling (Quick)",
+    "category": "Preservation",
+    "min_skill_level": "Home Cook",
+    "required_equipment": [],
+    "time_minutes": {"min": 30, "max": 1440},
+    "description": "Submerging vegetables or fruits in a hot vinegar-based brine (typically 1:1 vinegar to water with salt and sugar). Adds brightness, acidity, and crunch to dishes.",
+    "pro_tip": "The standard ratio is 1 cup vinegar, 1 cup water, 1 tablespoon each salt and sugar. Pour the brine boiling hot over the vegetables. They are ready in 30 minutes but improve over 24 hours.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Fermentation (Lacto)",
+    "category": "Preservation",
+    "min_skill_level": "Ambitious Amateur",
+    "required_equipment": [],
+    "time_minutes": {"min": 4320, "max": 43200},
+    "description": "Encouraging beneficial lactic acid bacteria to convert sugars into lactic acid in a salt brine (2-5%). Creates complex sour flavors and beneficial probiotics.",
+    "pro_tip": "Use a 3% salt brine by weight for most vegetables. Keep everything submerged below the brine to prevent mold. Ferment at room temperature (65-75F) and taste daily until the sourness suits you.",
+    "fallback_technique_name": "Pickling (Quick)"
+  },
+  {
+    "name": "Mounting with Butter",
+    "category": "Finishing",
+    "min_skill_level": "Ambitious Amateur",
+    "required_equipment": ["Saucepan"],
+    "time_minutes": {"min": 2, "max": 5},
+    "description": "Whisking cold butter into a sauce off heat to add richness, body, and a glossy sheen. The butter emulsifies into the sauce, creating a velvety texture.",
+    "pro_tip": "The butter must be cold and cut into small cubes. Add one piece at a time, swirling the pan rather than whisking aggressively. Never reboil a mounted sauce or the emulsion will break.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Torch Finishing (Brulee)",
+    "category": "Finishing",
+    "min_skill_level": "Ambitious Amateur",
+    "required_equipment": ["Kitchen Torch"],
+    "time_minutes": {"min": 1, "max": 5},
+    "description": "Using a culinary torch to caramelize sugar, sear proteins, or char vegetables on the surface. Provides precise, targeted heat application for finishing dishes.",
+    "pro_tip": "Keep the torch moving in slow, even passes about 2 inches from the surface. For creme brulee, use a thin, even layer of superfine sugar for the most consistent caramel.",
+    "fallback_technique_name": "Broiler Finishing"
+  },
+  {
+    "name": "Broiler Finishing",
+    "category": "Finishing",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Conventional Oven"],
+    "time_minutes": {"min": 2, "max": 8},
+    "description": "Using the oven's broiler element to rapidly brown, caramelize, or char the top surface of a dish. An accessible alternative to torch finishing.",
+    "pro_tip": "Position the oven rack 3-4 inches from the element. Watch constantly -- the broiler goes from perfect to burned in seconds. Leave the oven door slightly ajar to prevent the element from cycling off.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Resting Meat",
+    "category": "Finishing",
+    "min_skill_level": "Home Cook",
+    "required_equipment": [],
+    "time_minutes": {"min": 5, "max": 30},
+    "description": "Allowing cooked protein to sit undisturbed after cooking so juices redistribute evenly throughout. Cutting too early causes juice loss and dry meat.",
+    "pro_tip": "Rest for roughly 5 minutes per inch of thickness. Tent loosely with foil -- tight wrapping steams and softens the crust. The internal temperature will rise 5-10F during resting (carryover cooking).",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Tempering (Bringing to Room Temp)",
+    "category": "Preparation",
+    "min_skill_level": "Home Cook",
+    "required_equipment": [],
+    "time_minutes": {"min": 30, "max": 60},
+    "description": "Allowing refrigerated proteins to sit at room temperature before cooking. Promotes more even cooking and better searing by reducing the temperature differential.",
+    "pro_tip": "30-45 minutes is sufficient for steaks and chops. Do not exceed 2 hours at room temperature for food safety. This step is especially important for thick cuts and whole poultry.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Emulsion (Cold)",
+    "category": "Emulsification",
+    "min_skill_level": "Ambitious Amateur",
+    "required_equipment": ["Food Processor"],
+    "time_minutes": {"min": 10, "max": 20},
+    "description": "Creating a stable mixture of oil and water-based liquids at room temperature using mechanical force and emulsifiers like egg yolk or lecithin. The basis of mayonnaise, Caesar dressing, and similar sauces.",
+    "pro_tip": "Stream the oil in drop by drop at first until the emulsion catches, then increase to a thin stream. All ingredients should be at room temperature for the most stable result.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Basting",
+    "category": "Heat Application",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Cast Iron Skillet"],
+    "time_minutes": {"min": 2, "max": 5},
+    "description": "Spooning hot fat over protein while it cooks in a pan. Accelerates cooking on the top surface and adds richness. Often done with butter, thyme, and garlic in the pan.",
+    "pro_tip": "Tilt the pan slightly toward you and use a large spoon to continuously pour the foaming butter over the protein. Add crushed garlic, thyme sprigs, and a halved shallot to the butter for aromatic basting.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Duxelles",
+    "category": "Preparation",
+    "min_skill_level": "Ambitious Amateur",
+    "required_equipment": ["Food Processor", "Stainless Steel Saute Pan"],
+    "time_minutes": {"min": 20, "max": 35},
+    "description": "Finely chopping mushrooms and cooking them down with shallots until all moisture evaporates, creating a concentrated, intensely flavorful mushroom paste. A key component of Beef Wellington.",
+    "pro_tip": "Pulse the mushrooms in a food processor -- do not puree them. Cook in a dry pan first to drive off water, then add butter and shallots. The mixture is done when it holds together and pulls away from the pan.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Clarifying Butter",
+    "category": "Preparation",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Saucepan"],
+    "time_minutes": {"min": 15, "max": 30},
+    "description": "Gently melting butter to separate the milk solids and water from the pure butterfat. Clarified butter has a much higher smoke point and does not burn during high-heat cooking.",
+    "pro_tip": "Melt slowly over low heat without stirring. Skim the foam from the surface and carefully pour off the clear golden fat, leaving the white milk solids in the bottom. For ghee, cook the milk solids until golden for a nutty flavor.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Toasting Spices",
+    "category": "Preparation",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Non-Stick Skillet"],
+    "time_minutes": {"min": 2, "max": 5},
+    "description": "Dry-heating whole spices in a pan until fragrant and slightly darkened. Activates volatile oils and deepens the flavor profile dramatically.",
+    "pro_tip": "Use a dry pan over medium heat and shake or stir constantly -- spices go from toasted to burnt in seconds. Toast different spices separately as they have different timing. Grind immediately after toasting.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Blooming Spices in Oil",
+    "category": "Preparation",
+    "min_skill_level": "Home Cook",
+    "required_equipment": ["Saucepan"],
+    "time_minutes": {"min": 1, "max": 3},
+    "description": "Briefly frying whole or ground spices in hot oil or ghee to release fat-soluble flavor compounds. A foundational technique in Indian cooking (tadka/tempering).",
+    "pro_tip": "The oil should be hot but not smoking. Add spices and watch for them to sizzle, pop, and darken slightly -- usually 30-60 seconds. This flavored oil can be added to finished dishes as a garnish.",
+    "fallback_technique_name": "Toasting Spices"
+  },
+  {
+    "name": "Making Fresh Pasta",
+    "category": "Preparation",
+    "min_skill_level": "Ambitious Amateur",
+    "required_equipment": ["Pasta Machine"],
+    "time_minutes": {"min": 45, "max": 90},
+    "description": "Combining flour and eggs into a dough, kneading until smooth and elastic, resting, then rolling and cutting into desired shapes. Produces superior texture to dried pasta.",
+    "pro_tip": "Use 100g '00' flour per egg for the standard ratio. Knead for a full 10 minutes until the dough is silky smooth. Rest the dough for at least 30 minutes before rolling -- this relaxes the gluten and makes it easier to work.",
+    "fallback_technique_name": null
+  },
+  {
+    "name": "Gastrique",
+    "category": "Sauce Making",
+    "min_skill_level": "Ambitious Amateur",
+    "required_equipment": ["Saucepan"],
+    "time_minutes": {"min": 10, "max": 20},
+    "description": "A sweet-and-sour sauce base made by caramelizing sugar, deglazing with vinegar, and reducing. Often combined with fruit or stock for finishing sauces.",
+    "pro_tip": "Cook the sugar to a deep amber before adding vinegar -- the darker the caramel, the more complex the flavor. Stand back when adding vinegar as it will steam aggressively. A gastrique can rescue an overly rich or flat dish.",
+    "fallback_technique_name": null
+  }
+]

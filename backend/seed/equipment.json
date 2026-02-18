@@ -1,0 +1,219 @@
+[
+  {
+    "name": "Cast Iron Skillet",
+    "category": "Cookware",
+    "is_professional": false,
+    "capabilities": ["can_sear_high_heat", "can_oven_roast", "can_deep_fry"],
+    "home_alt": null
+  },
+  {
+    "name": "Stainless Steel Saute Pan",
+    "category": "Cookware",
+    "is_professional": false,
+    "capabilities": ["can_sear_high_heat", "can_oven_roast"],
+    "home_alt": null
+  },
+  {
+    "name": "Non-Stick Skillet",
+    "category": "Cookware",
+    "is_professional": false,
+    "capabilities": ["can_sear_high_heat"],
+    "home_alt": null
+  },
+  {
+    "name": "Dutch Oven",
+    "category": "Cookware",
+    "is_professional": false,
+    "capabilities": ["can_sear_high_heat", "can_oven_roast", "can_deep_fry", "can_steam"],
+    "home_alt": null
+  },
+  {
+    "name": "Stock Pot",
+    "category": "Cookware",
+    "is_professional": false,
+    "capabilities": ["can_steam"],
+    "home_alt": null
+  },
+  {
+    "name": "Saucepan",
+    "category": "Cookware",
+    "is_professional": false,
+    "capabilities": ["can_steam"],
+    "home_alt": null
+  },
+  {
+    "name": "Wok",
+    "category": "Cookware",
+    "is_professional": false,
+    "capabilities": ["can_sear_high_heat", "can_deep_fry", "can_steam"],
+    "home_alt": null
+  },
+  {
+    "name": "Sheet Pan",
+    "category": "Cookware",
+    "is_professional": false,
+    "capabilities": ["can_oven_roast"],
+    "home_alt": null
+  },
+  {
+    "name": "Roasting Pan",
+    "category": "Cookware",
+    "is_professional": false,
+    "capabilities": ["can_oven_roast"],
+    "home_alt": null
+  },
+  {
+    "name": "Grill (Charcoal/Gas)",
+    "category": "Appliance",
+    "is_professional": false,
+    "capabilities": ["can_sear_high_heat", "can_grill", "can_smoke"],
+    "home_alt": null
+  },
+  {
+    "name": "Conventional Oven",
+    "category": "Appliance",
+    "is_professional": false,
+    "capabilities": ["can_oven_roast"],
+    "home_alt": null
+  },
+  {
+    "name": "Immersion Circulator (Sous Vide)",
+    "category": "Appliance",
+    "is_professional": true,
+    "capabilities": ["can_sous_vide"],
+    "home_alt": "Zip-lock bag in a monitored water bath with a thermometer, checking temperature every 10 minutes"
+  },
+  {
+    "name": "Deep Fryer",
+    "category": "Appliance",
+    "is_professional": true,
+    "capabilities": ["can_deep_fry"],
+    "home_alt": "Dutch oven with a clip-on thermometer for oil temperature control"
+  },
+  {
+    "name": "Stand Mixer",
+    "category": "Appliance",
+    "is_professional": false,
+    "capabilities": ["can_mix", "can_whip"],
+    "home_alt": null
+  },
+  {
+    "name": "Food Processor",
+    "category": "Appliance",
+    "is_professional": false,
+    "capabilities": ["can_process", "can_mix"],
+    "home_alt": null
+  },
+  {
+    "name": "Immersion Blender",
+    "category": "Appliance",
+    "is_professional": false,
+    "capabilities": ["can_blend", "can_process"],
+    "home_alt": null
+  },
+  {
+    "name": "High-Speed Blender",
+    "category": "Appliance",
+    "is_professional": false,
+    "capabilities": ["can_blend"],
+    "home_alt": null
+  },
+  {
+    "name": "Kitchen Torch",
+    "category": "Specialty",
+    "is_professional": true,
+    "capabilities": ["can_torch"],
+    "home_alt": "Oven broiler set to high with the rack positioned 2-3 inches from the element"
+  },
+  {
+    "name": "Smoking Gun",
+    "category": "Specialty",
+    "is_professional": true,
+    "capabilities": ["can_smoke"],
+    "home_alt": "Stovetop smoking with a foil-lined pan, wood chips, and a tight-fitting lid"
+  },
+  {
+    "name": "Pressure Cooker",
+    "category": "Appliance",
+    "is_professional": false,
+    "capabilities": ["can_steam"],
+    "home_alt": null
+  },
+  {
+    "name": "Bamboo Steamer",
+    "category": "Cookware",
+    "is_professional": false,
+    "capabilities": ["can_steam"],
+    "home_alt": null
+  },
+  {
+    "name": "Mandoline Slicer",
+    "category": "Tool",
+    "is_professional": false,
+    "capabilities": ["can_process"],
+    "home_alt": null
+  },
+  {
+    "name": "Microplane Grater",
+    "category": "Tool",
+    "is_professional": false,
+    "capabilities": ["can_process"],
+    "home_alt": null
+  },
+  {
+    "name": "Mortar and Pestle",
+    "category": "Tool",
+    "is_professional": false,
+    "capabilities": ["can_process"],
+    "home_alt": null
+  },
+  {
+    "name": "Digital Instant-Read Thermometer",
+    "category": "Tool",
+    "is_professional": false,
+    "capabilities": [],
+    "home_alt": null
+  },
+  {
+    "name": "Pasta Machine",
+    "category": "Specialty",
+    "is_professional": true,
+    "capabilities": ["can_process"],
+    "home_alt": "Rolling pin and knife for hand-rolled and hand-cut pasta"
+  },
+  {
+    "name": "ISI Whip (Cream Charger)",
+    "category": "Specialty",
+    "is_professional": true,
+    "capabilities": ["can_whip"],
+    "home_alt": "Whisk or stand mixer with whisk attachment for whipped cream; no substitute for foams"
+  },
+  {
+    "name": "Dehydrator",
+    "category": "Specialty",
+    "is_professional": true,
+    "capabilities": [],
+    "home_alt": "Oven set to the lowest temperature (170-200F) with the door slightly ajar"
+  },
+  {
+    "name": "Chinois (Fine-Mesh Conical Strainer)",
+    "category": "Tool",
+    "is_professional": true,
+    "capabilities": [],
+    "home_alt": "Fine-mesh strainer lined with cheesecloth"
+  },
+  {
+    "name": "Plancha / Flat-Top Griddle",
+    "category": "Cookware",
+    "is_professional": true,
+    "capabilities": ["can_sear_high_heat", "can_grill"],
+    "home_alt": "Cast iron skillet or griddle pan preheated on high for 5 minutes"
+  },
+  {
+    "name": "Copper Saucepan",
+    "category": "Cookware",
+    "is_professional": true,
+    "capabilities": ["can_steam"],
+    "home_alt": "Heavy-bottomed stainless steel saucepan with careful heat management"
+  }
+]

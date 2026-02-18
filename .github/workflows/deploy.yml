@@ -1,0 +1,87 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -e ".[dev]"
+
+      - name: Run unit tests
+        run: |
+          cd backend
+          pytest tests/unit/ -v --tb=short
+
+  deploy:
+    needs: ci
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: /home/jmobrien1/food
+
+    steps:
+      - name: Pull latest code
+        run: git pull --ff-only
+
+      - name: Copy production env if missing
+        run: |
+          if [ ! -f .env ]; then
+            cp .env.example .env
+            echo "WARNING: Created .env from example — edit with real credentials"
+          fi
+
+      - name: Build and deploy
+        run: docker compose build
+
+      - name: Start services
+        run: docker compose up -d
+
+      - name: Wait for API health
+        run: |
+          echo "Waiting for API to be healthy..."
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8000/api/v1/health > /dev/null 2>&1; then
+              echo "API is healthy!"
+              exit 0
+            fi
+            echo "Attempt $i/30 — waiting 5s..."
+            sleep 5
+          done
+          echo "API failed to become healthy"
+          docker compose logs api --tail 50
+          exit 1
+
+      - name: Wait for frontend
+        run: |
+          echo "Waiting for frontend..."
+          for i in $(seq 1 20); do
+            if curl -sf http://localhost:3000 > /dev/null 2>&1; then
+              echo "Frontend is up!"
+              exit 0
+            fi
+            echo "Attempt $i/20 — waiting 5s..."
+            sleep 5
+          done
+          echo "Frontend failed to start"
+          docker compose logs web --tail 50
+          exit 1
+
+      - name: Show running services
+        run: docker compose ps
+
+      - name: Cleanup old images
+        run: docker image prune -f
