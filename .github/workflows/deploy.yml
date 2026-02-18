@@ -77,11 +77,14 @@ jobs:
             echo "Injected ANTHROPIC_API_KEY"
           fi
           sed -i "s|^LLM_MODEL=.*|LLM_MODEL=qwen2.5|" .env
-          sed -i "s|^OLLAMA_BASE_URL=.*|OLLAMA_BASE_URL=http://host.docker.internal:11434|" .env
           sed -i 's|^CORS_ORIGINS=.*|CORS_ORIGINS=["http://10.0.0.5:3004","http://localhost:3004"]|' .env
           sed -i "s|^NEXT_PUBLIC_API_URL=.*|NEXT_PUBLIC_API_URL=http://10.0.0.5:8004|" .env
           sed -i "s|^API_HOST_PORT=.*|API_HOST_PORT=8004|" .env
           sed -i "s|^WEB_HOST_PORT=.*|WEB_HOST_PORT=3004|" .env
+          # Append keys that may not exist in older .env files
+          grep -q "^OLLAMA_BASE_URL=" .env || echo "OLLAMA_BASE_URL=http://host.docker.internal:11434" >> .env
+          grep -q "^API_HOST_PORT=" .env || echo "API_HOST_PORT=8004" >> .env
+          grep -q "^WEB_HOST_PORT=" .env || echo "WEB_HOST_PORT=3004" >> .env
 
       - name: Build and deploy
         run: docker compose build

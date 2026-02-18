@@ -31,10 +31,10 @@ async def search_knowledge(
 
     sql = text(f"""
         SELECT id, content_type, source_table, text_content, metadata,
-               1 - (embedding <=> :embedding::vector) AS similarity
+               1 - (embedding <=> CAST(:embedding AS vector)) AS similarity
         FROM culinary_embeddings
         {where_clause}
-        ORDER BY embedding <=> :embedding::vector
+        ORDER BY embedding <=> CAST(:embedding AS vector)
         LIMIT :limit
     """)
 
