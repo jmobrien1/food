@@ -59,9 +59,9 @@ async def run_audit(ctx: AgentContext, session: AsyncSession) -> AgentContext:
             if pattern in equip_lower:
                 capabilities.update(caps)
 
-        # Also check DB for capabilities
+        # Also check DB for capabilities (exact match first, then substring)
         stmt = select(Equipment).where(
-            func.lower(Equipment.name).contains(equip_lower)
+            func.lower(Equipment.name) == equip_lower
         )
         result = await session.execute(stmt)
         db_equip = result.scalar_one_or_none()
