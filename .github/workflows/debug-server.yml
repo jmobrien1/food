@@ -11,40 +11,52 @@ jobs:
         working-directory: /home/jmobrien1/food
 
     steps:
-      - name: GPU info
+      - name: Docker containers
         run: |
-          echo "=== nvidia-smi ==="
-          nvidia-smi 2>/dev/null || echo "nvidia-smi not found"
+          echo "=== docker compose ps ==="
+          docker compose ps
           echo ""
-          echo "=== lspci GPU ==="
-          lspci 2>/dev/null | grep -i -E "vga|3d|nvidia" || echo "no GPU in lspci"
-          echo ""
-          echo "=== CUDA version ==="
-          nvcc --version 2>/dev/null || echo "nvcc not found"
+          echo "=== docker ps -a (all containers) ==="
+          docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
-      - name: Ollama GPU usage
+      - name: API container logs (last 80 lines)
         run: |
-          echo "=== Ollama ps (loaded models) ==="
-          curl -s http://localhost:11434/api/ps | python3 -m json.tool 2>/dev/null || echo "No models loaded"
-          echo ""
-          echo "=== Ollama logs (last 20) ==="
-          journalctl -u ollama --no-pager -n 20 2>/dev/null || sudo journalctl -u ollama --no-pager -n 20 2>/dev/null || echo "No ollama journal logs"
+          echo "=== API logs ==="
+          docker compose logs api --tail 80 --no-color
 
-      - name: Ollama install info
+      - name: Frontend container logs (last 30 lines)
         run: |
-          echo "=== Ollama version ==="
-          ollama --version 2>/dev/null || echo "ollama CLI not found"
-          echo ""
-          echo "=== Ollama binary ==="
-          which ollama 2>/dev/null || echo "not in PATH"
-          echo ""
-          echo "=== Ollama service ==="
-          systemctl status ollama 2>/dev/null | head -15 || echo "No systemd service"
+          echo "=== Frontend logs ==="
+          docker compose logs web --tail 30 --no-color
 
-      - name: Quick generation test with timing
+      - name: DB container logs (last 20 lines)
         run: |
-          echo "=== Timed Ollama generation ==="
-          time curl -s --max-time 120 http://localhost:11434/api/generate \
-            -d '{"model":"qwen2.5","prompt":"Say hello in one word","stream":false}' \
-            | python3 -c "import sys,json; r=json.load(sys.stdin); print('Response:', r.get('response','NONE')); print('Eval count:', r.get('eval_count','?')); print('Eval duration (ms):', round(r.get('eval_duration',0)/1e6, 1)); print('Prompt eval (ms):', round(r.get('prompt_eval_duration',0)/1e6, 1))" \
-            || echo "Generation failed"
+          echo "=== DB logs ==="
+          docker compose logs db --tail 20 --no-color
+
+      - name: API health check
+        run: |
+          echo "=== Health check ==="
+          curl -sv http://localhost:8004/api/v1/health 2>&1 || echo "Health check FAILED"
+          echo ""
+          echo "=== Test plan endpoint (quick) ==="
+          curl -sv --max-time 10 -X POST http://localhost:8004/api/v1/plans/generate \
+            -H "Content-Type: application/json" \
+            -d '{"ingredients":["chicken"],"equipment":["Oven"],"time_limit_minutes":60,"user_skill":"Home Cook","guest_count":2}' \
+            2>&1 | head -30 || echo "Plan endpoint failed"
+
+      - name: Server .env check
+        run: |
+          echo "=== .env contents (redacted) ==="
+          cat .env 2>/dev/null | sed 's/=.*/=***/' || echo "No .env file"
+          echo ""
+          echo "=== docker compose config (env resolution) ==="
+          docker compose config 2>&1 | grep -E "OLLAMA|LLM_MODEL|API_URL|PORT|CORS" || echo "No matching env vars"
+
+      - name: Ollama status
+        run: |
+          echo "=== Ollama reachable from host ==="
+          curl -s http://localhost:11434/api/tags | python3 -m json.tool 2>/dev/null | head -20 || echo "Ollama unreachable"
+          echo ""
+          echo "=== Ollama reachable from API container ==="
+          docker compose exec -T api curl -s --max-time 5 http://host.docker.internal:11434/api/tags 2>&1 | head -10 || echo "Container cannot reach Ollama"
