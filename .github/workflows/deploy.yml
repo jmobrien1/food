@@ -68,6 +68,8 @@ jobs:
             echo "Injected ANTHROPIC_API_KEY"
           fi
           sed -i "s|^LLM_MODEL=.*|LLM_MODEL=claude-sonnet-4-6|" .env
+          sed -i 's|^CORS_ORIGINS=.*|CORS_ORIGINS=["http://10.0.0.5:3001","http://localhost:3001"]|' .env
+          sed -i "s|^NEXT_PUBLIC_API_URL=.*|NEXT_PUBLIC_API_URL=http://10.0.0.5:8001|" .env
 
       - name: Build and deploy
         run: docker compose build
