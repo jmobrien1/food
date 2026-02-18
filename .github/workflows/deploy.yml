@@ -46,10 +46,10 @@ jobs:
           fi
 
       - name: Build and deploy
-        run: docker compose build
+        run: docker-compose build
 
       - name: Start services
-        run: docker compose up -d
+        run: docker-compose up -d
 
       - name: Wait for API health
         run: |
@@ -63,7 +63,7 @@ jobs:
             sleep 5
           done
           echo "API failed to become healthy"
-          docker compose logs api --tail 50
+          docker-compose logs api --tail 50
           exit 1
 
       - name: Wait for frontend
@@ -78,11 +78,11 @@ jobs:
             sleep 5
           done
           echo "Frontend failed to start"
-          docker compose logs web --tail 50
+          docker-compose logs web --tail 50
           exit 1
 
       - name: Show running services
-        run: docker compose ps
+        run: docker-compose ps
 
       - name: Cleanup old images
         run: docker image prune -f
