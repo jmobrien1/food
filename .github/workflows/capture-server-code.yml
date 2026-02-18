@@ -17,13 +17,10 @@ jobs:
       - name: Show current state
         run: |
           echo "=== git status ==="
-          git status
+          git status || true
           echo ""
           echo "=== git diff (summary) ==="
-          git diff --stat
-          echo ""
-          echo "=== git diff (full) ==="
-          git diff
+          git diff --stat || true
 
       - name: Configure git identity and auth
         env:
@@ -33,44 +30,41 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
 
-      - name: Pull latest from remote
+      - name: Clean up any in-progress rebase
         run: |
-          # Stash any local changes so pull doesn't conflict
-          git stash --include-untracked || true
-          git pull --rebase origin main
-          git stash pop || true
+          git rebase --abort 2>/dev/null || true
+          git stash drop 2>/dev/null || true
 
-      - name: Stage all changed and new files
+      - name: Sync server repo to match remote
         run: |
-          # Stage known new/modified files
-          git add -f backend/app/services/llm/local.py || true
-          git add -f backend/seed/ingest_knowledge.py || true
-          git add -f backend/app/services/llm/factory.py || true
-          git add -f docker-compose.yml || true
+          git fetch origin main
+          git reset --hard origin/main
+          echo "Server repo now at: $(git log --oneline -1)"
 
-          # Stage any other tracked-file changes
-          git add -u
+      - name: Check for server-only changes
+        id: check
+        run: |
+          # After reset, any unstaged differences are server-only files
+          # not yet in the remote repo
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            echo "=== Uncommitted server-only changes ==="
+            git status --short
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "Server is fully in sync with remote — nothing to capture"
+          fi
 
-          # Show what will be committed
-          echo "=== Staged changes ==="
+      - name: Stage and commit server-only changes
+        if: steps.check.outputs.has_changes == 'true'
+        run: |
+          git add -A
           git diff --cached --stat
 
-      - name: Commit changes
-        run: |
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-            exit 0
-          fi
-          git commit -m "capture: server code migrated to Ollama + RAG
+          git commit -m "capture: server-only changes not yet in git
 
-          - Add LocalOllamaService (backend/app/services/llm/local.py)
-          - Add knowledge ingestion script (backend/seed/ingest_knowledge.py)
-          - Update factory.py for dual Anthropic/Ollama routing
-          - Update docker-compose.yml with Ollama configuration
-          - Ports migrated: 8001→8004 (API), 3001→3004 (frontend)
-          - Model: qwen2.5 with 1,657 vector chunks in pgvector
-
-          Captured from server (10.0.0.5) — code was running but not in git."
+          Automatically captured from the running server (10.0.0.5)."
 
       - name: Push to main
+        if: steps.check.outputs.has_changes == 'true'
         run: git push origin main
