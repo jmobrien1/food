@@ -35,6 +35,20 @@ jobs:
         working-directory: /home/jmobrien1/food
 
     steps:
+      - name: Ensure docker compose plugin
+        working-directory: /home/jmobrien1
+        run: |
+          if docker compose version &> /dev/null; then
+            echo "Docker Compose already available"
+          else
+            echo "Installing Docker Compose V2 plugin..."
+            mkdir -p ~/.docker/cli-plugins/
+            curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 \
+              -o ~/.docker/cli-plugins/docker-compose
+            chmod +x ~/.docker/cli-plugins/docker-compose
+            docker compose version
+          fi
+
       - name: Pull latest code
         run: git pull --ff-only
 
@@ -46,10 +60,10 @@ jobs:
           fi
 
       - name: Build and deploy
-        run: docker-compose build
+        run: docker compose build
 
       - name: Start services
-        run: docker-compose up -d
+        run: docker compose up -d
 
       - name: Wait for API health
         run: |
@@ -63,7 +77,7 @@ jobs:
             sleep 5
           done
           echo "API failed to become healthy"
-          docker-compose logs api --tail 50
+          docker compose logs api --tail 50
           exit 1
 
       - name: Wait for frontend
@@ -78,11 +92,11 @@ jobs:
             sleep 5
           done
           echo "Frontend failed to start"
-          docker-compose logs web --tail 50
+          docker compose logs web --tail 50
           exit 1
 
       - name: Show running services
-        run: docker-compose ps
+        run: docker compose ps
 
       - name: Cleanup old images
         run: docker image prune -f
