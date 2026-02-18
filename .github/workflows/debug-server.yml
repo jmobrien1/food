@@ -1,0 +1,37 @@
+name: Debug Server
+
+on:
+  workflow_dispatch:
+
+jobs:
+  debug:
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: /home/jmobrien1/food
+
+    steps:
+      - name: Docker containers
+        run: docker compose ps
+
+      - name: API logs (last 80 lines)
+        run: docker compose logs api --tail 80 --no-log-prefix
+
+      - name: Ollama status
+        run: |
+          echo "=== Ollama tags ==="
+          curl -s http://localhost:11434/api/tags | python3 -m json.tool || echo "Ollama not reachable"
+
+      - name: Test Ollama generation
+        run: |
+          echo "=== Quick Ollama test ==="
+          curl -s --max-time 30 http://localhost:11434/api/generate \
+            -d '{"model":"qwen2.5","prompt":"Say hello in one sentence","stream":false}' \
+            | python3 -c "import sys,json; print(json.load(sys.stdin).get('response','NO RESPONSE'))" \
+            || echo "Ollama generation failed or timed out"
+
+      - name: Test API health
+        run: curl -s http://localhost:8004/api/v1/health
+
+      - name: Check .env LLM config
+        run: grep -E "^(LLM_MODEL|OLLAMA_BASE_URL)" .env || echo "Keys not found"
