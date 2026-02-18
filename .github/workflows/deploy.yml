@@ -59,7 +59,7 @@ jobs:
             echo "WARNING: Created .env from example — edit with real credentials"
           fi
 
-      - name: Inject secrets into .env
+      - name: Inject secrets and config into .env
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
@@ -67,6 +67,7 @@ jobs:
             sed -i "s|^ANTHROPIC_API_KEY=.*|ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}|" .env
             echo "Injected ANTHROPIC_API_KEY"
           fi
+          sed -i "s|^LLM_MODEL=.*|LLM_MODEL=claude-sonnet-4-6|" .env
 
       - name: Build and deploy
         run: docker compose build

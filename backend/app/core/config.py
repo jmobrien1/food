@@ -7,7 +7,7 @@ class Settings(BaseSettings):
 
     # Anthropic
     anthropic_api_key: str = ""
-    llm_model: str = "claude-sonnet-4-6-20250514"
+    llm_model: str = "claude-sonnet-4-6"
 
     # Server
     backend_host: str = "0.0.0.0"
