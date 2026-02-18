@@ -11,6 +11,23 @@ jobs:
         working-directory: /home/jmobrien1/food
 
     steps:
+      - name: Network and firewall
+        run: |
+          echo "=== Server IP addresses ==="
+          ip addr show 2>/dev/null | grep "inet " || ifconfig 2>/dev/null | grep "inet "
+          echo ""
+          echo "=== Default route ==="
+          ip route show default 2>/dev/null || route -n 2>/dev/null | head -5
+          echo ""
+          echo "=== UFW status ==="
+          sudo ufw status verbose 2>/dev/null || echo "ufw not available"
+          echo ""
+          echo "=== iptables rules for port 8004 ==="
+          sudo iptables -L -n 2>/dev/null | head -30 || echo "iptables not available"
+          echo ""
+          echo "=== Listening ports ==="
+          ss -tlnp 2>/dev/null | grep -E "8004|3004|8000|3000|5432|5433" || netstat -tlnp 2>/dev/null | grep -E "8004|3004"
+
       - name: Docker containers
         run: |
           echo "=== docker compose ps ==="
@@ -24,26 +41,26 @@ jobs:
           echo "=== API logs ==="
           docker compose logs api --tail 80 --no-color
 
-      - name: Frontend container logs (last 30 lines)
-        run: |
-          echo "=== Frontend logs ==="
-          docker compose logs web --tail 30 --no-color
-
-      - name: DB container logs (last 20 lines)
-        run: |
-          echo "=== DB logs ==="
-          docker compose logs db --tail 20 --no-color
-
       - name: API health check
         run: |
           echo "=== Health check ==="
           curl -sv http://localhost:8004/api/v1/health 2>&1 || echo "Health check FAILED"
+
+      - name: Test Ollama from API container
+        run: |
+          echo "=== Ollama from host ==="
+          curl -s --max-time 5 http://localhost:11434/api/tags | head -5 || echo "Ollama unreachable from host"
           echo ""
-          echo "=== Test plan endpoint (quick) ==="
-          curl -sv --max-time 10 -X POST http://localhost:8004/api/v1/plans/generate \
-            -H "Content-Type: application/json" \
-            -d '{"ingredients":["chicken"],"equipment":["Oven"],"time_limit_minutes":60,"user_skill":"Home Cook","guest_count":2}' \
-            2>&1 | head -30 || echo "Plan endpoint failed"
+          echo "=== Ollama from container (python) ==="
+          docker compose exec -T api python3 -c "
+          import urllib.request, json
+          try:
+              r = urllib.request.urlopen('http://host.docker.internal:11434/api/tags', timeout=5)
+              data = json.loads(r.read())
+              print('OK - Models:', [m['name'] for m in data.get('models', [])])
+          except Exception as e:
+              print(f'FAILED: {e}')
+          " 2>&1
 
       - name: Server .env check
         run: |
@@ -52,11 +69,3 @@ jobs:
           echo ""
           echo "=== docker compose config (env resolution) ==="
           docker compose config 2>&1 | grep -E "OLLAMA|LLM_MODEL|API_URL|PORT|CORS" || echo "No matching env vars"
-
-      - name: Ollama status
-        run: |
-          echo "=== Ollama reachable from host ==="
-          curl -s http://localhost:11434/api/tags | python3 -m json.tool 2>/dev/null | head -20 || echo "Ollama unreachable"
-          echo ""
-          echo "=== Ollama reachable from API container ==="
-          docker compose exec -T api curl -s --max-time 5 http://host.docker.internal:11434/api/tags 2>&1 | head -10 || echo "Container cannot reach Ollama"
