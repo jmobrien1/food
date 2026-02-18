@@ -27,7 +27,7 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
         <div className="rounded-lg border border-red-800 bg-red-950/50 p-6 text-center">
           <p className="text-red-300">{error || "Plan not found"}</p>
           <Link href="/audit" className="mt-4 inline-block text-sm text-amber-500 hover:underline">
-            Start a new audit
+            Start a new recipe
           </Link>
         </div>
       </div>
@@ -51,7 +51,7 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
           </Link>
           <Link href="/audit">
             <Button variant="outline" size="lg">
-              New Audit
+              New Recipe
             </Button>
           </Link>
         </div>

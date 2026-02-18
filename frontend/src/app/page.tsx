@@ -34,7 +34,7 @@ export default function Home() {
             href="/audit"
             className="rounded-lg bg-amber-600 px-8 py-3 text-lg font-semibold text-zinc-950 transition hover:bg-amber-500"
           >
-            Begin The Audit
+            Start a Recipe
           </Link>
 
           <Link

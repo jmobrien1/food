@@ -58,9 +58,9 @@ class PlanGetResponse(BaseModel):
 
 
 class PlanGenerateRequest(BaseModel):
-    ingredients: list[str] = Field(..., min_length=1)
+    ingredients: list[str] = Field(default_factory=list)
     equipment: list[str] = Field(default_factory=list)
-    time_limit_minutes: int = Field(default=120, ge=15, le=480)
+    time_limit_minutes: int = Field(default=120, ge=0, le=2880, description="0 means unlimited")
     user_skill: str = Field(default="Ambitious Amateur")
     guest_count: int = Field(default=2, ge=1, le=20)
     intent: str | None = None

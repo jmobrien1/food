@@ -50,7 +50,7 @@ export function IngredientInput({ ingredients, onChange }: IngredientInputProps)
   return (
     <div>
       <label className="mb-2 block text-sm font-medium text-zinc-300">
-        Ingredients
+        Ingredients <span className="font-normal text-zinc-500">(optional)</span>
       </label>
 
       <div className="mb-2 flex flex-wrap gap-2">

@@ -23,11 +23,11 @@ export default function AuditPage() {
 
       <div className="mb-8">
         <h1 className="font-serif text-4xl font-bold text-zinc-50">
-          The <span className="text-amber-500">Audit</span>
+          Start a <span className="text-amber-500">Recipe</span>
         </h1>
         <p className="mt-2 text-zinc-400">
-          Tell us what you&apos;re working with. We&apos;ll design a dish that
-          maximizes what you have.
+          Tell us what you want to cook. We&apos;ll design a dish and give you
+          a step-by-step execution plan.
         </p>
       </div>
 

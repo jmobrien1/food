@@ -2,9 +2,9 @@ from pydantic import BaseModel, Field
 
 
 class AuditRequest(BaseModel):
-    ingredients: list[str] = Field(..., min_length=1, description="Available ingredients")
+    ingredients: list[str] = Field(default_factory=list, description="Available ingredients")
     equipment: list[str] = Field(default_factory=list, description="Available equipment")
-    time_limit_minutes: int = Field(default=120, ge=15, le=480)
+    time_limit_minutes: int = Field(default=120, ge=0, le=2880, description="0 means unlimited")
     user_skill: str = Field(
         default="Ambitious Amateur",
         description="Skill level: Home Cook, Ambitious Amateur, Serious Enthusiast",

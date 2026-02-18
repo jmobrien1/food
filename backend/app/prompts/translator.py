@@ -7,7 +7,16 @@ Key principles:
 - Suggest techniques appropriate to the skill level
 - Honor time constraints absolutely
 - If a professional technique is needed but equipment is missing, suggest the best achievable alternative
-- Flavor combinations should be well-established (use the affinity data provided)"""
+- Flavor combinations should be well-established (use the affinity data provided)
+
+IMPORTANT — Adapt detail to the cook's skill level:
+- **Home Cook**: Explain every technique in plain language. Never assume the cook knows
+  terms like "bloom", "deglaze", "temper", "chiffonade", or "fond". Describe what to
+  look for at each step (color, sound, smell, texture). Include common mistakes to avoid.
+- **Ambitious Amateur**: You can use standard culinary vocabulary but briefly explain
+  advanced or less-common techniques.
+- **Serious Enthusiast**: Use professional terminology freely. Focus on nuance and
+  precision rather than basics."""
 
 TRANSLATOR_USER = """Create an execution plan for this scenario:
 
@@ -28,7 +37,7 @@ Design a dish that:
 1. Uses the available ingredients creatively
 2. Respects all equipment constraints
 3. Fits within the time budget
-4. Matches the skill level
+4. Matches the skill level — adjust description detail accordingly
 5. Leverages strong flavor affinities
 
 For each ingredient, provide:

@@ -13,17 +13,37 @@ interface AuditFormProps {
   loading?: boolean;
 }
 
+const TIME_STOPS = [
+  15, 30, 45, 60, 90, 120, 180, 240, 360, 480, 720, 1440, 2880, 0,
+] as const;
+
+function formatTime(minutes: number): string {
+  if (minutes === 0) return "Unlimited";
+  if (minutes < 60) return `${minutes}m`;
+  if (minutes < 1440) {
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    return m ? `${h}h ${m}m` : `${h}h`;
+  }
+  const d = Math.floor(minutes / 1440);
+  const rem = minutes % 1440;
+  if (!rem) return `${d}d`;
+  const h = Math.floor(rem / 60);
+  return h ? `${d}d ${h}h` : `${d}d`;
+}
+
 export function AuditForm({ onSubmit, loading }: AuditFormProps) {
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [equipment, setEquipment] = useState<string[]>([]);
   const [skill, setSkill] = useState("Ambitious Amateur");
-  const [timeLimit, setTimeLimit] = useState(90);
+  const [timeIndex, setTimeIndex] = useState(4); // default 90 min
   const [guestCount, setGuestCount] = useState(4);
   const [intent, setIntent] = useState("");
 
+  const timeLimit = TIME_STOPS[timeIndex];
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (ingredients.length === 0) return;
 
     onSubmit({
       ingredients,
@@ -37,6 +57,17 @@ export function AuditForm({ onSubmit, loading }: AuditFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      <div>
+        <label className="mb-2 block text-sm font-medium text-zinc-300">
+          What delicious meal do you want to make?
+        </label>
+        <Input
+          value={intent}
+          onChange={(e) => setIntent(e.target.value)}
+          placeholder="e.g., 'Something elegant for a dinner party' or 'Comfort food, big flavors'"
+        />
+      </div>
+
       <IngredientInput ingredients={ingredients} onChange={setIngredients} />
 
       <EquipmentSelector selected={equipment} onChange={setEquipment} />
@@ -46,22 +77,20 @@ export function AuditForm({ onSubmit, loading }: AuditFormProps) {
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <label className="mb-2 block text-sm font-medium text-zinc-300">
-            Time Budget (minutes)
+            Time Budget
           </label>
           <div className="flex items-center gap-4">
             <input
               type="range"
-              min={15}
-              max={480}
-              step={15}
-              value={timeLimit}
-              onChange={(e) => setTimeLimit(Number(e.target.value))}
+              min={0}
+              max={TIME_STOPS.length - 1}
+              step={1}
+              value={timeIndex}
+              onChange={(e) => setTimeIndex(Number(e.target.value))}
               className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-zinc-700 accent-amber-500"
             />
-            <span className="min-w-[4rem] text-right text-lg font-semibold text-amber-400">
-              {timeLimit >= 60
-                ? `${Math.floor(timeLimit / 60)}h${timeLimit % 60 ? ` ${timeLimit % 60}m` : ""}`
-                : `${timeLimit}m`}
+            <span className="min-w-[5rem] text-right text-lg font-semibold text-amber-400">
+              {formatTime(timeLimit)}
             </span>
           </div>
         </div>
@@ -94,18 +123,7 @@ export function AuditForm({ onSubmit, loading }: AuditFormProps) {
         </div>
       </div>
 
-      <div>
-        <label className="mb-2 block text-sm font-medium text-zinc-300">
-          Intent (optional)
-        </label>
-        <Input
-          value={intent}
-          onChange={(e) => setIntent(e.target.value)}
-          placeholder="e.g., 'Something elegant for a dinner party' or 'Comfort food, big flavors'"
-        />
-      </div>
-
-      <Button type="submit" size="lg" disabled={loading || ingredients.length === 0}>
+      <Button type="submit" size="lg" disabled={loading}>
         {loading ? "Generating Plan..." : "Generate Execution Plan"}
       </Button>
     </form>

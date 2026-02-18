@@ -71,8 +71,9 @@ async def run_audit(ctx: AgentContext, session: AsyncSession) -> AgentContext:
     # Skill tier
     skill_tier = SKILL_MAP.get(req.user_skill, 2)
 
-    # Active time budget (70% of total for active work)
-    max_active = int(req.time_limit_minutes * 0.7)
+    # Active time budget (70% of total for active work, or generous default if unlimited)
+    effective_time = req.time_limit_minutes if req.time_limit_minutes > 0 else 1440
+    max_active = int(effective_time * 0.7)
 
     ctx.constraints = ConstraintFlags(
         can_sous_vide="can_sous_vide" in capabilities,
@@ -100,9 +101,9 @@ async def run_audit(ctx: AgentContext, session: AsyncSession) -> AgentContext:
             flags.append(f"Ingredient '{ing_name}' not in database — will use LLM knowledge")
 
     # Flag potential issues
-    if req.time_limit_minutes < 30 and req.guest_count > 4:
+    if req.time_limit_minutes > 0 and req.time_limit_minutes < 30 and req.guest_count > 4:
         flags.append("Very tight timeline for guest count — consider simpler preparations")
-    if skill_tier == 1 and req.time_limit_minutes < 45:
+    if skill_tier == 1 and req.time_limit_minutes > 0 and req.time_limit_minutes < 45:
         flags.append("Home cook with tight timeline — will stick to simple techniques")
 
     ctx.flags = flags

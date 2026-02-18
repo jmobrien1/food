@@ -41,8 +41,8 @@ async def run_scheduler(ctx: AgentContext, llm: LLMService) -> AgentContext:
         dish_name=ctx.dish_name,
         dish_description=ctx.dish_description,
         ingredients=ingredients_text,
-        time_limit=ctx.audit_request.time_limit_minutes,
-        active_minutes=constraints.max_active_minutes if constraints else int(ctx.audit_request.time_limit_minutes * 0.7),
+        time_limit=ctx.audit_request.time_limit_minutes if ctx.audit_request.time_limit_minutes > 0 else "unlimited",
+        active_minutes=constraints.max_active_minutes if constraints else int((ctx.audit_request.time_limit_minutes or 1440) * 0.7),
         skill_level=ctx.audit_request.user_skill,
         capabilities=", ".join(cap_list) if cap_list else "Basic stovetop cooking",
     )
@@ -54,11 +54,12 @@ async def run_scheduler(ctx: AgentContext, llm: LLMService) -> AgentContext:
         temperature=0.6,
     )
 
-    # Post-validate: no task exceeds total time limit
-    for phase in result.timeline:
-        for task in phase.tasks:
-            if task.duration_minutes > ctx.audit_request.time_limit_minutes:
-                task.duration_minutes = ctx.audit_request.time_limit_minutes
+    # Post-validate: no task exceeds total time limit (skip if unlimited)
+    if ctx.audit_request.time_limit_minutes > 0:
+        for phase in result.timeline:
+            for task in phase.tasks:
+                if task.duration_minutes > ctx.audit_request.time_limit_minutes:
+                    task.duration_minutes = ctx.audit_request.time_limit_minutes
                 logger.warning(
                     f"Task '{task.description}' duration capped to time limit"
                 )

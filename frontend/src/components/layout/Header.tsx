@@ -20,7 +20,7 @@ export function Header() {
               pathname === "/audit" ? "text-amber-500" : "text-zinc-400"
             }`}
           >
-            The Audit
+            New Recipe
           </Link>
         </nav>
       </div>
