@@ -86,6 +86,9 @@ jobs:
       - name: Build and deploy
         run: docker compose build
 
+      - name: Stop and remove orphan containers
+        run: docker compose down --remove-orphans
+
       - name: Start services
         run: docker compose up -d
 
