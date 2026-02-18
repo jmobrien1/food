@@ -55,10 +55,11 @@ async def run_translator(
     knowledge_text = ""
     intent = req.intent or f"dish with {', '.join(req.ingredients[:4])}"
     try:
-        knowledge = await search_knowledge(session, llm, intent, top_k=3)
-        knowledge_text = "\n".join(
-            f"- {k['text_content'][:200]}" for k in knowledge
-        )
+        async with session.begin_nested():
+            knowledge = await search_knowledge(session, llm, intent, top_k=3)
+            knowledge_text = "\n".join(
+                f"- {k['text_content'][:200]}" for k in knowledge
+            )
     except Exception as e:
         logger.warning(f"Knowledge base search failed: {e}")
         knowledge_text = "(No knowledge base results available)"
