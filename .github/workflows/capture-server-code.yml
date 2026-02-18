@@ -60,4 +60,8 @@ jobs:
           Captured from server (10.0.0.5) — code was running but not in git."
 
       - name: Push to main
-        run: git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+          git push origin main
