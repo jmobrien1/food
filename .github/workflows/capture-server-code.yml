@@ -3,6 +3,9 @@ name: Capture Server Code
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   capture:
     runs-on: self-hosted
