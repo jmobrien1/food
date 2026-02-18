@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Float, Integer, String
+from sqlalchemy import Integer, String
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func

@@ -1,7 +1,6 @@
 """Shared context passed through the 4-agent pipeline."""
 
 from dataclasses import dataclass, field
-from typing import Any
 
 from app.schemas.audit import AuditRequest, ConstraintFlags
 from app.schemas.plan import (

@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 from app.agents.base import AgentContext, AgentTrace
 from app.prompts.scheduler import SCHEDULER_SYSTEM, SCHEDULER_USER
-from app.schemas.plan import TimelinePhase, TimelineTask
+from app.schemas.plan import TimelinePhase
 from app.services.llm.base import LLMService
 
 logger = logging.getLogger(__name__)

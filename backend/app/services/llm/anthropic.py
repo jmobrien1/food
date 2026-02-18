@@ -1,10 +1,8 @@
-import json
 import logging
-from typing import Any
+from collections.abc import AsyncIterator
 
 import anthropic
 from pydantic import BaseModel
-from sentence_transformers import SentenceTransformer
 
 from app.core.config import Settings
 
@@ -15,11 +13,12 @@ class AnthropicLLMService:
     def __init__(self, settings: Settings):
         self._client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
         self._model = settings.llm_model
-        self._embedder: SentenceTransformer | None = None
+        self._embedder = None
         self._embedding_model_name = settings.embedding_model
 
-    def _get_embedder(self) -> SentenceTransformer:
+    def _get_embedder(self):
         if self._embedder is None:
+            from sentence_transformers import SentenceTransformer
             self._embedder = SentenceTransformer(self._embedding_model_name)
         return self._embedder
 
@@ -83,7 +82,7 @@ class AnthropicLLMService:
         user_prompt: str,
         temperature: float = 0.7,
         max_tokens: int = 4096,
-    ) -> Any:
+    ) -> AsyncIterator[str]:
         async with self._client.messages.stream(
             model=self._model,
             max_tokens=max_tokens,
