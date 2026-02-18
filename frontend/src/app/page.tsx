@@ -37,12 +37,12 @@ export default function Home() {
             Start a Recipe
           </Link>
 
-          <Link
+          <a
             href="#how-it-works"
             className="rounded-lg border border-zinc-700 px-8 py-3 text-lg font-semibold text-zinc-300 transition hover:border-zinc-500 hover:text-zinc-100"
           >
             How It Works
-          </Link>
+          </a>
         </div>
       </div>
 
