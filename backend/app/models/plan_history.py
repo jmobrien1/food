@@ -1,6 +1,7 @@
 import uuid
+from datetime import datetime
 
-from sqlalchemy import Integer, String
+from sqlalchemy import DateTime, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
@@ -20,4 +21,6 @@ class PlanHistory(Base):
     agent_traces: Mapped[dict | None] = mapped_column(JSONB)
     model_used: Mapped[str] = mapped_column(String(100), nullable=False)
     latency_ms: Mapped[int] = mapped_column(Integer, nullable=False)
-    created_at = mapped_column(server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )

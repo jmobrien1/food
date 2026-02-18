@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     # Server
     backend_host: str = "0.0.0.0"
     backend_port: int = 8000
-    cors_origins: list[str] = ["http://localhost:3000", "http://10.0.0.5:3000"]
+    cors_origins: list[str] = ["http://localhost:3001", "http://10.0.0.5:3001"]
 
     # Embedding
     embedding_model: str = "all-MiniLM-L6-v2"
