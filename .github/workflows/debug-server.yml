@@ -11,27 +11,40 @@ jobs:
         working-directory: /home/jmobrien1/food
 
     steps:
-      - name: Docker containers
-        run: docker compose ps
-
-      - name: API logs (last 80 lines)
-        run: docker compose logs api --tail 80 --no-log-prefix
-
-      - name: Ollama status
+      - name: GPU info
         run: |
-          echo "=== Ollama tags ==="
-          curl -s http://localhost:11434/api/tags | python3 -m json.tool || echo "Ollama not reachable"
+          echo "=== nvidia-smi ==="
+          nvidia-smi 2>/dev/null || echo "nvidia-smi not found"
+          echo ""
+          echo "=== lspci GPU ==="
+          lspci 2>/dev/null | grep -i -E "vga|3d|nvidia" || echo "no GPU in lspci"
+          echo ""
+          echo "=== CUDA version ==="
+          nvcc --version 2>/dev/null || echo "nvcc not found"
 
-      - name: Test Ollama generation
+      - name: Ollama GPU usage
         run: |
-          echo "=== Quick Ollama test ==="
-          curl -s --max-time 30 http://localhost:11434/api/generate \
-            -d '{"model":"qwen2.5","prompt":"Say hello in one sentence","stream":false}' \
-            | python3 -c "import sys,json; print(json.load(sys.stdin).get('response','NO RESPONSE'))" \
-            || echo "Ollama generation failed or timed out"
+          echo "=== Ollama ps (loaded models) ==="
+          curl -s http://localhost:11434/api/ps | python3 -m json.tool 2>/dev/null || echo "No models loaded"
+          echo ""
+          echo "=== Ollama logs (last 20) ==="
+          journalctl -u ollama --no-pager -n 20 2>/dev/null || sudo journalctl -u ollama --no-pager -n 20 2>/dev/null || echo "No ollama journal logs"
 
-      - name: Test API health
-        run: curl -s http://localhost:8004/api/v1/health
+      - name: Ollama install info
+        run: |
+          echo "=== Ollama version ==="
+          ollama --version 2>/dev/null || echo "ollama CLI not found"
+          echo ""
+          echo "=== Ollama binary ==="
+          which ollama 2>/dev/null || echo "not in PATH"
+          echo ""
+          echo "=== Ollama service ==="
+          systemctl status ollama 2>/dev/null | head -15 || echo "No systemd service"
 
-      - name: Check .env LLM config
-        run: grep -E "^(LLM_MODEL|OLLAMA_BASE_URL)" .env || echo "Keys not found"
+      - name: Quick generation test with timing
+        run: |
+          echo "=== Timed Ollama generation ==="
+          time curl -s --max-time 120 http://localhost:11434/api/generate \
+            -d '{"model":"qwen2.5","prompt":"Say hello in one word","stream":false}' \
+            | python3 -c "import sys,json; r=json.load(sys.stdin); print('Response:', r.get('response','NONE')); print('Eval count:', r.get('eval_count','?')); print('Eval duration (ms):', round(r.get('eval_duration',0)/1e6, 1)); print('Prompt eval (ms):', round(r.get('prompt_eval_duration',0)/1e6, 1))" \
+            || echo "Generation failed"
