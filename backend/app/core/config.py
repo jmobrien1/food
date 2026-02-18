@@ -5,14 +5,19 @@ class Settings(BaseSettings):
     # Database
     database_url: str = "postgresql+asyncpg://chefdecuisine:changeme@db:5432/chefdecuisine"
 
-    # Anthropic
+    # Anthropic (used when llm_model contains "claude")
     anthropic_api_key: str = ""
-    llm_model: str = "claude-sonnet-4-6"
+
+    # Ollama (used for all other models)
+    ollama_base_url: str = "http://host.docker.internal:11434"
+
+    # LLM
+    llm_model: str = "qwen2.5"
 
     # Server
     backend_host: str = "0.0.0.0"
     backend_port: int = 8000
-    cors_origins: list[str] = ["http://localhost:3001", "http://10.0.0.5:3001"]
+    cors_origins: list[str] = ["http://localhost:3004", "http://10.0.0.5:3004"]
 
     # Embedding
     embedding_model: str = "all-MiniLM-L6-v2"

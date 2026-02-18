@@ -1,4 +1,4 @@
-.PHONY: up down build logs seed test lint migrate
+.PHONY: up down build logs seed ingest test lint migrate ollama-check
 
 up:
 	docker compose up -d
@@ -14,6 +14,9 @@ logs:
 
 seed:
 	docker compose exec api python -m seed.runner
+
+ingest:
+	docker compose exec api python -m seed.ingest_knowledge
 
 test:
 	docker compose exec api pytest tests/ -v
@@ -44,3 +47,7 @@ shell-db:
 
 debug:
 	docker compose --profile debug up -d
+
+ollama-check:
+	@echo "Checking Ollama connectivity..."
+	@curl -sf http://localhost:11434/api/tags && echo "\nOllama is reachable" || echo "Ollama is NOT reachable at localhost:11434"

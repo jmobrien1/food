@@ -44,3 +44,7 @@ htmlcov/
 
 # Misc
 *.log
+
+# Knowledge docs (large, derived — ingested into pgvector)
+backend/knowledge_docs/
+RAG/

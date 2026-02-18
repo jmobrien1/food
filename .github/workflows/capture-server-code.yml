@@ -1,0 +1,63 @@
+name: Capture Server Code
+
+on:
+  workflow_dispatch:
+
+jobs:
+  capture:
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: /home/jmobrien1/food
+
+    steps:
+      - name: Show current state
+        run: |
+          echo "=== git status ==="
+          git status
+          echo ""
+          echo "=== git diff (summary) ==="
+          git diff --stat
+          echo ""
+          echo "=== git diff (full) ==="
+          git diff
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Stage all changed and new files
+        run: |
+          # Stage known new/modified files
+          git add -f backend/app/services/llm/local.py || true
+          git add -f backend/seed/ingest_knowledge.py || true
+          git add -f backend/app/services/llm/factory.py || true
+          git add -f docker-compose.yml || true
+
+          # Stage any other tracked-file changes
+          git add -u
+
+          # Show what will be committed
+          echo "=== Staged changes ==="
+          git diff --cached --stat
+
+      - name: Commit changes
+        run: |
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "capture: server code migrated to Ollama + RAG
+
+          - Add LocalOllamaService (backend/app/services/llm/local.py)
+          - Add knowledge ingestion script (backend/seed/ingest_knowledge.py)
+          - Update factory.py for dual Anthropic/Ollama routing
+          - Update docker-compose.yml with Ollama configuration
+          - Ports migrated: 8001→8004 (API), 3001→3004 (frontend)
+          - Model: qwen2.5 with 1,657 vector chunks in pgvector
+
+          Captured from server (10.0.0.5) — code was running but not in git."
+
+      - name: Push to main
+        run: git push origin main

@@ -19,7 +19,14 @@ fi
 if [ ! -f .env ]; then
     echo "WARNING: .env not found — copying from .env.example"
     cp .env.example .env
-    echo "Edit .env with your ANTHROPIC_API_KEY before first use"
+    echo "Edit .env before first use"
+fi
+
+# Check Ollama connectivity (non-blocking warning)
+if curl -sf http://localhost:11434/api/tags > /dev/null 2>&1; then
+    echo "Ollama is reachable"
+else
+    echo "WARNING: Ollama not reachable at localhost:11434 — local LLM will fail"
 fi
 
 # Pull latest if this is a git repo
@@ -30,7 +37,7 @@ fi
 
 # Build and start
 echo "Building containers..."
-docker compose build app
+docker compose build api
 
 echo "Starting services..."
 docker compose up -d
@@ -38,7 +45,7 @@ docker compose up -d
 # Health check
 echo "Waiting for API health..."
 for i in $(seq 1 30); do
-    if curl -sf http://localhost:8001/api/v1/health > /dev/null 2>&1; then
+    if curl -sf http://localhost:8004/api/v1/health > /dev/null 2>&1; then
         echo "API is healthy!"
         break
     fi
@@ -58,6 +65,6 @@ echo ""
 echo "=== Deploy complete ==="
 docker compose ps
 echo ""
-echo "Frontend: http://10.0.0.5:3001"
-echo "API:      http://10.0.0.5:8001"
-echo "API Docs: http://10.0.0.5:8001/docs"
+echo "Frontend: http://10.0.0.5:3004"
+echo "API:      http://10.0.0.5:8004"
+echo "API Docs: http://10.0.0.5:8004/docs"

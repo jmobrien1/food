@@ -22,9 +22,12 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-chefdecuisine}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-chefdecuisine}
     ports:
-      - "${API_HOST_PORT:-8001}:8000"
+      - "${API_HOST_PORT:-8004}:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./backend:/app
+      - ./backend/knowledge_docs:/app/knowledge_docs
     depends_on:
       db:
         condition: service_healthy
@@ -32,9 +35,9 @@ services:
   web:
     build: ./frontend
     environment:
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://10.0.0.5:8001}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://10.0.0.5:8004}
     ports:
-      - "${WEB_HOST_PORT:-3001}:3000"
+      - "${WEB_HOST_PORT:-3004}:3000"
     volumes:
       - ./frontend:/app
       - /app/node_modules

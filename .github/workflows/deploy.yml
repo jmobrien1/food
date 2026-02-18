@@ -49,6 +49,15 @@ jobs:
             docker compose version
           fi
 
+      - name: Check Ollama availability
+        run: |
+          if curl -sf http://localhost:11434/api/tags > /dev/null 2>&1; then
+            echo "Ollama is reachable"
+            curl -s http://localhost:11434/api/tags | python3 -c "import sys,json; models=[m['name'] for m in json.load(sys.stdin).get('models',[])]; print('Available models:', ', '.join(models) if models else 'none')"
+          else
+            echo "WARNING: Ollama not reachable at localhost:11434"
+          fi
+
       - name: Pull latest code
         run: git pull --ff-only
 
@@ -67,9 +76,12 @@ jobs:
             sed -i "s|^ANTHROPIC_API_KEY=.*|ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}|" .env
             echo "Injected ANTHROPIC_API_KEY"
           fi
-          sed -i "s|^LLM_MODEL=.*|LLM_MODEL=claude-sonnet-4-6|" .env
-          sed -i 's|^CORS_ORIGINS=.*|CORS_ORIGINS=["http://10.0.0.5:3001","http://localhost:3001"]|' .env
-          sed -i "s|^NEXT_PUBLIC_API_URL=.*|NEXT_PUBLIC_API_URL=http://10.0.0.5:8001|" .env
+          sed -i "s|^LLM_MODEL=.*|LLM_MODEL=qwen2.5|" .env
+          sed -i "s|^OLLAMA_BASE_URL=.*|OLLAMA_BASE_URL=http://host.docker.internal:11434|" .env
+          sed -i 's|^CORS_ORIGINS=.*|CORS_ORIGINS=["http://10.0.0.5:3004","http://localhost:3004"]|' .env
+          sed -i "s|^NEXT_PUBLIC_API_URL=.*|NEXT_PUBLIC_API_URL=http://10.0.0.5:8004|" .env
+          sed -i "s|^API_HOST_PORT=.*|API_HOST_PORT=8004|" .env
+          sed -i "s|^WEB_HOST_PORT=.*|WEB_HOST_PORT=3004|" .env
 
       - name: Build and deploy
         run: docker compose build
@@ -81,7 +93,7 @@ jobs:
         run: |
           echo "Waiting for API to be healthy..."
           for i in $(seq 1 30); do
-            if curl -sf http://localhost:8001/api/v1/health > /dev/null 2>&1; then
+            if curl -sf http://localhost:8004/api/v1/health > /dev/null 2>&1; then
               echo "API is healthy!"
               exit 0
             fi
@@ -96,7 +108,7 @@ jobs:
         run: |
           echo "Waiting for frontend..."
           for i in $(seq 1 20); do
-            if curl -sf http://localhost:3001 > /dev/null 2>&1; then
+            if curl -sf http://localhost:3004 > /dev/null 2>&1; then
               echo "Frontend is up!"
               exit 0
             fi

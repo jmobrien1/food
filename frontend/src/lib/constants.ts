@@ -1,4 +1,4 @@
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://10.0.0.5:8001";
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://10.0.0.5:8004";
 
 export const SKILL_LEVELS = [
   { value: "Home Cook", label: "Home Cook", description: "Comfortable with basics, learning new skills" },
